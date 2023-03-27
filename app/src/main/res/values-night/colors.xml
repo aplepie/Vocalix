@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Colors for the dark theme -->
+    <color name="color_primary">#000000</color>
+    <color name="color_primary_dark">#303030</color>
+    <color name="color_accent">#FFFFFF</color>
+    <color name="color_background">#000000</color>
+    <color name="color_on_background">#FCFCFF</color>
+    <color name="color_badge">#FF0000</color>
+    <color name="color_edit_text">#7E939E</color>
+</resources>

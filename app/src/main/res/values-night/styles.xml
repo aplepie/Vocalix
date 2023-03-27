@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/color_primary</item>
+        <item name="colorPrimaryDark">@color/color_primary_dark</item>
+        <item name="colorAccent">@color/color_accent</item>
+        <item name="android:windowBackground">@color/color_background</item>
+        <item name="android:textColor">@color/color_on_background</item>
+        <item name="actionBarStyle">@style/AppTheme.ActionBar</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:statusBarColor">@color/color_primary</item>
+        <item name="android:textColorHint">@color/color_edit_text</item>
+    </style>
+
+    <style name="AppTheme.ActionBar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/color_primary</item>
+        <item name="android:titleTextStyle">@style/AppTheme.ActionBar.TitleText</item>
+    </style>
+
+    <style name="AppTheme.ActionBar.TitleText" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/color_on_background</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+</resources>

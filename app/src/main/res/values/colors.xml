@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="blue_gray_300">#90A4AE</color>
+    <color name="record_button_color">#FF0000</color>
+    <color name="record_button_highlighted_color">#990000</color>
+    <color name="record_frame_color">#FFFFFF</color>
+    <color name="record_button_normal_color">#FF0000</color>
+
+    <!-- Colors for the light theme -->
+    <color name="color_primary">#FCFCFF</color>
+    <color name="color_primary_dark">#EBEBEB</color>
+    <color name="color_accent">#263238</color>
+    <color name="color_background">#FCFCFF</color>
+    <color name="color_on_background">#1A1A1A</color>
+    <color name="color_badge">#FF0000</color>
+    <color name="color_edit_text">#7E939E</color>
+</resources>
