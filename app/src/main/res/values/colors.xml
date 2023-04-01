@@ -10,7 +10,7 @@
     <color name="color_primary">#FCFCFF</color>
     <color name="color_primary_dark">#EBEBEB</color>
     <color name="color_accent">#263238</color>
-    <color name="color_background">#FCFCFF</color>
+    <color name="color_background">#F9F9FB</color>
     <color name="color_on_background">#1A1A1A</color>
     <color name="color_badge">#FF0000</color>
     <color name="color_edit_text">#7E939E</color>

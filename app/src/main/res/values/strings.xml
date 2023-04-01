@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Vocalix</string>
-    <string name="home_text_placement">Where are you \ngoing?</string>
+    <string name="home_text_placement">Vocalix</string>
+    <string name="description_text_placement_1">Seleccione uno de los ejercicios de la lista o búsque un ejercicio en concreto en la barra de búsqueda.</string>
+    <string name="description_text_placement_2">Si necesita ayuda, pulse el icono que se encuentra en la parte inferior derecha de la pantalla.</string>
     <string name="home_search_hint">E.g: New York, United States</string>
     <string name="place_image_description">Place image</string>
+    <string name="back_arrow">Navigate back to the previous screen</string>
+    <string name="bookmark_icon">Bookmark the exercise for the future</string>
 </resources>
