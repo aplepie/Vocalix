@@ -352,6 +352,7 @@
             android:paddingEnd="69dp">
 
                 <FrameLayout
+                    android:id="@+id/start_recording_button"
                     android:layout_width="236dp"
                     android:layout_height="50dp"
                     android:background="@drawable/rounded_button_background">

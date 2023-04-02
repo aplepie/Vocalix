@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <application
         android:theme="@style/AppTheme"
         android:allowBackup="true"
@@ -26,7 +28,16 @@
 
         <activity
             android:name=".activity.DetailsActivity"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.Details" />
+
+        <activity
+            android:name=".activity.RecordingActivity"
+            android:parentActivityName=".activity.DetailsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.DetailsActivity" />
+        </activity>
 
         <meta-data
             android:name="preloaded_fonts"
