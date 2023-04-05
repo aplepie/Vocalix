@@ -1,0 +1,105 @@
+[
+  {
+    "name": "Sustained Vowel /a/",
+    "type": "Sustained Vowel",
+    "description": "This exercise focuses on evaluating the user's ability to maintain a consistent pitch and volume while holding the /a/ sound. Changes in speech, such as irregular pitch or volume, could indicate neurodegenerative speech patterns.",
+    "instructions": [
+      "Step 1: Sit or stand comfortably with a straight posture.",
+      "Step 2: Take a deep breath through your nose.",
+      "Step 3: Pronounce the vowel /a/ and hold the sound for 10 seconds, maintaining a consistent pitch and volume.",
+      "Step 4: Exhale slowly and relax."
+    ],
+    "image": "image_01",
+    "difficulty": "Easy",
+    "duration": "10 seconds"
+  },
+  {
+    "name": "Sustained Vowel /o/",
+    "type": "Sustained Vowel",
+    "description": "The sustained vowel /o/ exercise helps to evaluate the user's ability to maintain a consistent pitch and volume while holding the /o/ sound. This exercise can provide insights into the user's breath control, vocal quality, and potential neurodegenerative speech changes.",
+    "instructions": [
+      "Step 1: Sit or stand comfortably with a straight posture.",
+      "Step 2: Take a deep breath through your nose.",
+      "Step 3: Pronounce the vowel /o/ and hold the sound for as long as possible, maintaining a consistent pitch and volume.",
+      "Step 4: Exhale slowly and relax."
+    ],
+    "image": "image_02",
+    "difficulty": "Easy",
+    "duration": "10 seconds"
+  },
+  {
+    "name": "Simple Word Repetition",
+    "type": "Word Repetition Exercise",
+    "description": "This exercise assesses the user's ability to accurately pronounce and repeat simple words, which can help identify speech difficulties related to neurodegenerative conditions.",
+    "instructions": [
+      "Step 1: Sit or stand comfortably with a straight posture.",
+      "Step 2: Take a deep breath through your nose.",
+      "Step 3: Focus on the word 'apple' as the word to be repeated.",
+      "Step 4: Repeat the word 'apple' as clearly and accurately as possible.",
+      "Step 5: The app will record your pronunciation of the word 'apple' for evaluation.",
+      "Step 6: Exhale slowly and relax."
+    ],
+    "image": "image_03",
+    "difficulty": "Easy",
+    "duration": "10 seconds"
+  },
+  {
+    "name": "Diadochokinetic Exercise /pa/-/ta/-/ka/",
+    "type": "Diadochokinetic Exercise",
+    "description": "This exercise assesses the user's ability to rapidly and accurately alternate between different syllables (/pa/, /ta/, and /ka/). Changes in the speed or accuracy of alternating syllables could indicate neurodegenerative speech patterns.",
+    "instructions": [
+      "Step 1: Sit or stand comfortably with a straight posture.",
+      "Step 2: Take a deep breath through your nose.",
+      "Step 3: Repeat the syllable groups /pa/, /ta/, and /ka/ as quickly and accurately as possible for 10 seconds.",
+      "Step 4: Exhale slowly and relax."
+    ],
+    "image": "image_04",
+    "difficulty": "Moderate",
+    "duration": "10 seconds"
+  },
+  {
+    "name": "Phrase Repetition",
+    "type": "Phrase Exercise",
+    "description": "This exercise evaluates the user's ability to accurately pronounce and articulate a given phrase. Changes in speech clarity or fluency could indicate neurodegenerative speech patterns.",
+    "instructions": [
+      "Step 1: Sit or stand comfortably with a straight posture.",
+      "Step 2: Take a deep breath through your nose.",
+      "Step 3: Listen to the given phrase and repeat it as accurately as possible for 10 seconds.",
+      "Step 4: Exhale slowly and relax."
+    ],
+    "image": "image_05",
+    "difficulty": "Moderate",
+    "duration": "10 seconds"
+  },
+  {
+    "name": "Reading Exercise",
+    "type": "Reading Exercise",
+    "description": "This exercise evaluates the user's ability to read and pronounce words from a given text for 10 seconds. Changes in reading fluency or pronunciation could indicate neurodegenerative speech patterns.",
+    "instructions": [
+      "Step 1: Sit or stand comfortably with a straight posture.",
+      "Step 2: Take a deep breath through your nose.",
+      "Step 3: Read the given text out loud, pronouncing each word as accurately as possible for 10 seconds.",
+      "Step 4: Exhale slowly and relax."
+    ],
+    "image": "image_06",
+    "difficulty": "Hard",
+    "duration": "10 seconds"
+  },
+  {
+    "name": "Conversational Speech",
+    "type": "Conversational Exercise",
+    "description": "This exercise aims to evaluate the user's ability to engage in conversational speech, focusing on their fluency, coherence, and articulation. Changes in conversational speech patterns could indicate neurodegenerative speech issues.",
+    "instructions": [
+      "Step 1: Sit or stand comfortably with a straight posture.",
+      "Step 2: Take a deep breath through your nose.",
+      "Step 3: Choose a topic from the following suggestions or think of a topic you feel comfortable talking about: favorite hobbies or interests, a recent event or news item, a memorable vacation or trip, your favorite book or movie, a personal accomplishment or proud moment.",
+      "Step 4: Use a conversation starter or a question related to the chosen topic to initiate the conversation. Some examples include: 'What do you like to do in your free time?', 'Have you heard about the recent news on...?', 'Tell me about your favorite vacation destination.', 'What's your favorite book or movie, and why?', 'Share a personal accomplishment you're proud of.'",
+      "Step 5: Talk about the chosen topic for 10 seconds, focusing on fluency, coherence, and articulation.",
+      "Step 6: Exhale slowly and relax."
+    ],
+    "image": "image_07",
+    "difficulty": "Hard",
+    "duration": "10 seconds"
+  }
+]
+

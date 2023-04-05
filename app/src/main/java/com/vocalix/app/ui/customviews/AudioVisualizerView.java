@@ -1,4 +1,4 @@
-package com.vocalix.app.resources;
+package com.vocalix.app.ui.customviews;
 
 import android.content.Context;
 import android.graphics.Canvas;

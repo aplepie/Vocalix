@@ -2,34 +2,49 @@ package com.vocalix.app.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.vocalix.app.R;
+import com.vocalix.app.database.model.ExerciseViewModel;
+
+import java.util.Map;
 
 public class DetailsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
     private FrameLayout startRecordingButton;
+    private ExerciseViewModel exerciseViewModel;
+    private String exerciseName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
 
+        exerciseViewModel = new ViewModelProvider(this).get(ExerciseViewModel.class);
+        exerciseName = getIntent().getStringExtra("exerciseName");
+
         initViews();
         setupToolbar();
         setupButtonClickListener();
         setupExpandableTextView();
+        loadExerciseDetails();
     }
 
     private void initViews() {
         toolbar = findViewById(R.id.toolbar);
         startRecordingButton = findViewById(R.id.start_recording_button);
+
+        ImageButton helpButton = findViewById(R.id.help_button);
+        helpButton.setVisibility(View.GONE);
     }
 
     private void setupToolbar() {
@@ -56,5 +71,22 @@ public class DetailsActivity extends AppCompatActivity {
                 "\n" +
                 "Phasellus eu aliquam magna. Integer massa libero, sagittis quis porttitor non, aliquam eget magna. In ullamcorper magna id ex pharetra, nec fermentum eros mattis. Morbi suscipit nulla a leo congue condimentum. Integer eu turpis facilisis, varius dui ac, maximus ante. Aliquam ullamcorper dignissim tempor. Cras lorem quam, porta non facilisis id, malesuada eu purus. Pellentesque accumsan imperdiet consectetur. Aenean volutpat ipsum quis metus pretium, a dictum augue fermentum. Integer a elit eu sem egestas euismod in at ligula. Praesent id facilisis ex. Aenean placerat, risus id faucibus aliquam, nisi ex placerat urna, quis fringilla justo turpis id diam. Duis lacinia, ligula non pulvinar ullamcorper, ante elit porttitor velit, nec semper est lorem at metus. Suspendisse rhoncus nisl gravida porta hendrerit. Fusce pharetra sapien urna, quis euismod nibh pellentesque at. Pellentesque feugiat, urna ac interdum venenatis, lacus justo facilisis sem, sit amet feugiat felis arcu ut arcu. ");
     }
+
+    private void loadExerciseDetails() {
+        exerciseViewModel.getVocalExercises().observe(this, exercises -> {
+            for (Map<String, Object> exercise : exercises) {
+                if (exercise.get("name").equals(exerciseName)) {
+                    // Update TextView fields with exercise details
+                    ((TextView) findViewById(R.id.category)).setText((String) exercise.get("type"));
+                    ((TextView) findViewById(R.id.exercise_name_tittle)).setText((String) exercise.get("name"));
+                    ((TextView) findViewById(R.id.exercise_name)).setText((String) exercise.get("name"));
+                    ((TextView) findViewById(R.id.exercise_difficulty)).setText((String) exercise.get("difficulty"));
+                    ((TextView) findViewById(R.id.exercise_duration)).setText((String) exercise.get("duration"));
+                    break;
+                }
+            }
+        });
+    }
+
 }
 

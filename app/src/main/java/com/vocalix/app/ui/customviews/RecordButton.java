@@ -1,4 +1,4 @@
-package com.vocalix.app.resources;
+package com.vocalix.app.ui.customviews;
 
 import android.animation.ValueAnimator;
 import android.content.Context;

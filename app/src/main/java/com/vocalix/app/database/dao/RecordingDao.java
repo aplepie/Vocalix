@@ -1,9 +1,11 @@
-package com.vocalix.app.model;
+package com.vocalix.app.database.dao;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+
+import com.vocalix.app.database.entity.Recording;
 
 import java.util.List;
 

@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.vocalix.app.R;
-import com.vocalix.app.model.Recording;
+import com.vocalix.app.database.entity.Recording;
 
 import java.util.List;
 

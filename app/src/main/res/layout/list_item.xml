@@ -4,10 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/item_background"
-    android:padding="8dp">
+    android:elevation="3dp"
+    android:padding="8dp"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp">
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/exercise_image"
         android:layout_width="68dp"
         android:layout_height="68dp"
         android:layout_marginStart="6dp"
@@ -24,10 +27,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
-        app:layout_constraintBottom_toBottomOf="@id/image"
+        app:layout_constraintBottom_toBottomOf="@id/exercise_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/image"
-        app:layout_constraintTop_toTopOf="@id/image" >
+        app:layout_constraintStart_toEndOf="@id/exercise_image"
+        app:layout_constraintTop_toTopOf="@id/exercise_image" >
 
         <TextView
             android:id="@+id/exercise_name"
@@ -61,7 +64,7 @@
                 app:tint="#B8B8D2" />
 
             <TextView
-                android:id="@+id/exercise_category"
+                android:id="@+id/exercise_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -85,7 +88,7 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
-                android:id="@+id/duration"
+                android:id="@+id/exercise_duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -101,7 +104,7 @@
                 android:layout_height="1dp" />
 
             <TextView
-                android:id="@+id/difficulty"
+                android:id="@+id/exercise_difficulty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -118,5 +121,3 @@
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-

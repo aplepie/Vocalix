@@ -1,4 +1,4 @@
-package com.vocalix.app.resources;
+package com.vocalix.app.ui.decorations;
 
 import android.graphics.Rect;
 import android.view.View;

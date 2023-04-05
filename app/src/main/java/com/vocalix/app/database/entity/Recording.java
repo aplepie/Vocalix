@@ -1,4 +1,4 @@
-package com.vocalix.app.model;
+package com.vocalix.app.database.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;

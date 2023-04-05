@@ -1,4 +1,4 @@
-package com.vocalix.app.resources;
+package com.vocalix.app.ui.utils;
 
 import androidx.room.TypeConverter;
 

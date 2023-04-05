@@ -2,13 +2,17 @@ package com.vocalix.app.activity;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
+import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -35,15 +39,18 @@ import com.arthenica.ffmpegkit.FFmpegSession;
 import com.arthenica.ffmpegkit.ReturnCode;
 import com.vocalix.app.R;
 import com.vocalix.app.adapter.RecordingAdapter;
-import com.vocalix.app.model.AppDatabase;
-import com.vocalix.app.model.Recording;
-import com.vocalix.app.resources.RecordButton;
+import com.vocalix.app.database.AppDatabase;
+import com.vocalix.app.database.entity.Recording;
+import com.vocalix.app.ui.customviews.RecordButton;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,10 +81,7 @@ public class RecordingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recording);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
-        }
+        checkAndRequestAudioPermission();
 
         initViews();
         setupToolbar();
@@ -103,6 +107,12 @@ public class RecordingActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ImageButton backArrow = findViewById(R.id.back_arrow);
         backArrow.setOnClickListener(v -> onBackPressed());
+    }
+
+    private void checkAndRequestAudioPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 100);
+        }
     }
 
     private void updateRecordingListVisibility() {
@@ -214,20 +224,15 @@ public class RecordingActivity extends AppCompatActivity {
     }
 
     private void startRecording() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, 100);
+            return;
+        }
+
         bufferSize = AudioRecord.getMinBufferSize(44100,
                 AudioFormat.CHANNEL_IN_MONO,
                 AudioFormat.ENCODING_PCM_16BIT);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
         audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC,
                 44100,
                 AudioFormat.CHANNEL_IN_MONO,
@@ -241,8 +246,8 @@ public class RecordingActivity extends AppCompatActivity {
             try {
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
                 String recordingFileName = "VOCALIX_" + timeStamp + ".pcm";
-                File storageDir = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-                currentRecordingFilePath = new File(storageDir, recordingFileName).getAbsolutePath();
+
+                currentRecordingFilePath = new File(getCacheDir(), recordingFileName).getAbsolutePath();
                 FileOutputStream fos = new FileOutputStream(currentRecordingFilePath);
                 BufferedOutputStream bos = new BufferedOutputStream(fos);
                 DataOutputStream dos = new DataOutputStream(bos);
@@ -286,12 +291,10 @@ public class RecordingActivity extends AppCompatActivity {
 
             Toast.makeText(this, "Recording stopped", Toast.LENGTH_SHORT).show();
 
-            // Convert the PCM file to an MP3 file
-            String mp3OutputPath = currentRecordingFilePath.replace(".pcm", ".mp3");
+            // Convert the PCM file to an MP3 file (API level 28 and below)
+            String recordingFileName = new File(currentRecordingFilePath).getName();
+            String mp3OutputPath = new File(getCacheDir(), recordingFileName.replace(".pcm", ".mp3")).getAbsolutePath();
             convertPcmToMp3(currentRecordingFilePath, mp3OutputPath);
-
-            Log.i("RecordingActivity", "Recording file path: " + currentRecordingFilePath);
-            Log.i("RecordingActivity", "mp3OutputPath file path: " + mp3OutputPath);
 
             // Save the recording to the database
             String recordingName = "VOCALIX_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
@@ -302,6 +305,9 @@ public class RecordingActivity extends AppCompatActivity {
                 appDatabase.recordingDao().insert(recording);
                 fetchRecordings();
             }).start();
+
+            // Save the recording to the gallery
+            saveRecordingToGallery(mp3OutputPath);
         } else {
             Toast.makeText(this, "No recording to stop", Toast.LENGTH_SHORT).show();
         }
@@ -331,16 +337,24 @@ public class RecordingActivity extends AppCompatActivity {
     private void fetchRecordings() {
         appDatabase = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "recordings-db").build();
 
-        if (appDatabase == null) {
-            appDatabase = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "recordings-db").build();
-        }
-
         new Thread(() -> {
-            recordingList.clear();
-            recordingList.addAll(appDatabase.recordingDao().getAll());
+            List<Recording> recordings = appDatabase.recordingDao().getAll();
 
             runOnUiThread(() -> {
-                recordingAdapter.notifyDataSetChanged();
+                int oldSize = recordingList.size();
+                recordingList.clear();
+
+                if (oldSize > 0) {
+                    recordingAdapter.notifyItemRangeRemoved(0, oldSize);
+                }
+
+                recordingList.addAll(recordings);
+                int newSize = recordingList.size();
+
+                if (newSize > 0) {
+                    recordingAdapter.notifyItemRangeInserted(0, newSize);
+                }
+
                 updateRecordingListVisibility();
             });
         }).start();
@@ -356,6 +370,52 @@ public class RecordingActivity extends AppCompatActivity {
                 Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
                 finish();
             }
+        }
+    }
+
+    private void saveRecordingToGallery(String recordingFilePath) {
+        File recordingFile = new File(recordingFilePath);
+        String mimeType = "audio/mp3";
+        String fileName = recordingFile.getName();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName);
+        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType);
+        contentValues.put(MediaStore.Audio.AudioColumns.ARTIST, "Vocalix");
+        contentValues.put(MediaStore.Audio.AudioColumns.ALBUM, "Vocalix Recordings");
+        contentValues.put(MediaStore.Audio.AudioColumns.TITLE, fileName);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            contentValues.put(MediaStore.Audio.Media.RELATIVE_PATH, "Music/VocalixRecordings");
+            contentValues.put(MediaStore.Audio.Media.IS_PENDING, 1);
+        } else {
+            contentValues.put(MediaStore.MediaColumns.DATA, Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_MUSIC).getAbsolutePath() + "/VocalixRecordings/" + fileName);
+        }
+
+        Uri uri = getContentResolver().insert(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, contentValues);
+
+        try (InputStream inputStream = Files.newInputStream(recordingFile.toPath());
+             OutputStream outputStream = getContentResolver().openOutputStream(uri)) {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            contentValues.clear();
+            contentValues.put(MediaStore.Audio.Media.IS_PENDING, 0);
+            getContentResolver().update(uri, contentValues, null, null);
+        }
+
+        boolean isDeleted = new File(recordingFilePath).delete();
+
+        if (!isDeleted) {
+            Log.e("saveRecordingToGallery", "Failed to delete the temporary recording file: " + recordingFilePath);
         }
     }
 }

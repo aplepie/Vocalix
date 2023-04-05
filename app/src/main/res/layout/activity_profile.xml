@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.vocalix.app.activity.ProfileActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        app:contentInsetEnd="16dp"
+        app:contentInsetStart="16dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <include layout="@layout/details_toolbar" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/profile_image"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/avatar_02"
+        app:civ_border_color="#3D5A80"
+        app:civ_border_width="2dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
+    <ImageView
+        android:id="@+id/change_profile_image_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        android:src="@drawable/ic_add_a_photo"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_image"
+        app:layout_constraintEnd_toEndOf="@+id/profile_image" />
+
+    <TextView
+        android:id="@+id/user_full_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Name Surname"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_image" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fields_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_full_name">
+
+        <!-- Name field -->
+        <ImageView
+            android:id="@+id/name_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_person"
+            app:layout_constraintBottom_toBottomOf="@+id/name_field"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/name_label" />
+
+        <TextView
+            android:id="@+id/name_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Name"
+            android:textColor="#3D5A80"
+            app:layout_constraintStart_toEndOf="@+id/name_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/name_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/name_icon"
+            app:layout_constraintTop_toBottomOf="@+id/name_label" />
+
+        <!-- Surname field -->
+        <ImageView
+            android:id="@+id/surname_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_person"
+            app:layout_constraintBottom_toBottomOf="@+id/surname_field"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/surname_label" />
+
+        <TextView
+            android:id="@+id/surname_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Surname"
+            android:textColor="#3D5A80"
+            app:layout_constraintStart_toEndOf="@+id/surname_icon"
+            app:layout_constraintTop_toBottomOf="@+id/name_field" />
+
+        <EditText
+            android:id="@+id/surname_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Surname"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/surname_icon"
+            app:layout_constraintTop_toBottomOf="@+id/surname_label" />
+
+        <!-- Identifier field -->
+        <ImageView
+            android:id="@+id/identifier_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_badge"
+            app:layout_constraintBottom_toBottomOf="@+id/identifier_field"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/identifier_label" />
+
+        <TextView
+            android:id="@+id/identifier_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Identifier"
+            android:textColor="#3D5A80"
+            app:layout_constraintStart_toEndOf="@+id/identifier_icon"
+            app:layout_constraintTop_toBottomOf="@+id/surname_field" />
+
+        <EditText
+            android:id="@+id/identifier_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Identifier"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/identifier_icon"
+            app:layout_constraintTop_toBottomOf="@+id/identifier_label" />
+
+        <!-- Email field -->
+        <ImageView
+            android:id="@+id/email_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="16dp"
+            android:src="@drawable/ic_email"
+            app:layout_constraintBottom_toBottomOf="@+id/email_field"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/email_label" />
+
+        <TextView
+            android:id="@+id/email_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Email"
+            android:textColor="#3D5A80"
+            app:layout_constraintStart_toEndOf="@+id/email_icon"
+            app:layout_constraintTop_toBottomOf="@+id/identifier_field" />
+
+        <EditText
+            android:id="@+id/email_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="16dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/email_icon"
+            app:layout_constraintTop_toBottomOf="@+id/email_label" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
+            android:backgroundTint="#3D5A80"
+            android:gravity="center|center_vertical"
+            android:layout_marginTop="40dp"
+            android:text="Save"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/email_field" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
