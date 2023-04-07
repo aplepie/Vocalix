@@ -1,4 +1,4 @@
-package com.vocalix.app.adapter;
+package com.vocalix.app.database.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -72,7 +72,10 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
 
     public static class ExerciseViewHolder extends RecyclerView.ViewHolder {
         ImageView exerciseImage;
-        TextView exerciseName, exerciseType, exerciseInstructions, exerciseDuration, exerciseDifficulty;
+        TextView exerciseName;
+        TextView exerciseType;
+        TextView exerciseDuration;
+        TextView exerciseDifficulty;
         Context context;
         List<Map<String, Object>> exercises;
 
@@ -137,12 +140,14 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.Exerci
         };
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void updateFilteredExercises(List<Map<String, Object>> newExercises) {
         this.filteredExercises.clear();
         this.filteredExercises.addAll(newExercises);
         notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void updateData(List<Map<String, Object>> newExercises) {
         this.exercises = newExercises;
         notifyDataSetChanged();

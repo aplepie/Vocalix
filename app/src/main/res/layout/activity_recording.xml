@@ -29,124 +29,25 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintBottom_toTopOf="@+id/bottom_sheet_container">
 
+        <TextView
+            android:id="@+id/instructions_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_semibold"
+            android:paddingBottom="5dp"
+            android:text="Instrucciones de uso"
+            android:textColor="#1F1F39"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <!-- Instructions section -->
         <LinearLayout
-            android:id="@+id/instructions_section"
+            android:id="@+id/instructions_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/poppins_semibold"
-                android:paddingBottom="5dp"
-                android:text="Instrucciones de uso"
-                android:textColor="#1F1F39"
-                android:textSize="23sp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:text="01 "
-                    android:textColor="#B8B8D2"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:justificationMode="inter_word"
-                    android:paddingStart="18dp"
-                    android:text="Presione el botón de “comenzar la grabación”, para empezar el proceso de grabación."
-                    android:textColor="#1F1F39"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="15dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="02 "
-                    android:textColor="#B8B8D2"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:justificationMode="inter_word"
-                    android:paddingStart="18dp"
-                    android:text="Lea las instrucciones atentamente para saber como funciona el ejercicio y qué debe hacer."
-                    android:textColor="#1F1F39"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="15dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:text="03 "
-                    android:textColor="#B8B8D2"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins"
-                    android:justificationMode="inter_word"
-                    android:paddingStart="18dp"
-                    android:text="Para finalizar la grabación, pulse el botón de nuevo."
-                    android:textColor="#1F1F39"
-                    android:textSize="14sp" />
-            </LinearLayout>
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:alpha="0.5"
-                android:fontFamily="@font/poppins"
-                android:justificationMode="inter_word"
-                android:text="Si en cualquier momento tiene alguna duda, presione el botón de ayuda."
-                android:textColor="#1F1F39"
-                android:textSize="12sp" />
-        </LinearLayout>
+            app:layout_constraintTop_toBottomOf="@id/instructions_title" />
         <!-- End of instructions section -->
 
         <TextView
@@ -154,12 +55,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Grabaciones Pasadas"
-            android:textSize="18sp"
+            android:textSize="21sp"
             android:textStyle="bold"
             android:paddingTop="10sp"
             android:paddingBottom="5sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/instructions_section" />
+            app:layout_constraintTop_toBottomOf="@id/instructions_container" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -167,19 +68,14 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/past_recordings_title">
 
-            <!-- ScrollView for past recordings -->
-            <ScrollView
-                android:id="@+id/past_recordings_scroll_view"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/past_recordings_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <!-- Add a modern-looking list for past recordings, e.g., RecyclerView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/past_recordings_recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:listitem="@layout/recording_list_item" />
-            </ScrollView>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
+                android:layout_marginStart="-20dp"
+                android:layout_marginEnd="-20dp"
+                tools:listitem="@layout/recording_list_item" />
 
             <!-- LinearLayout for empty state -->
             <LinearLayout
@@ -194,15 +90,16 @@
                     android:id="@+id/empty_state_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/no_recordings" />
+                    android:src="@drawable/no_recordings"
+                    android:layout_marginTop="-90dp" />
 
                 <!-- TextView for empty state -->
                 <TextView
                     android:id="@+id/empty_state_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="No Recordings yet!"
+                    android:layout_marginTop="-50dp"
+                    android:text="No hay ninguna grabación!"
                     android:textSize="24sp"
                     android:textStyle="bold" />
 
@@ -212,8 +109,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Once you start recording, they will be listed here."
-                    android:textSize="18sp" />
+                    android:text="Una vez que empieces a grabar, los archivos de grabación aparecerán aquí."
+                    android:textAlignment="center"
+                    android:textColor="#787676"
+                    android:textSize="16sp" />
             </LinearLayout>
         </FrameLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -236,7 +135,7 @@
             android:layout_marginTop="16dp"
             android:text="Recording"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
@@ -250,7 +149,18 @@
             android:layout_marginTop="8dp"
             android:text="00:00,00"
             android:textColor="@android:color/darker_gray"
-            android:textSize="16sp"
+            android:textSize="18sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_text" />
+
+        <com.vocalix.app.ui.customviews.WaveformView
+            android:id="@+id/waveform_view"
+            android:layout_width="match_parent"
+            android:layout_height="400px"
+            android:layout_marginTop="65dp"
+            android:layout_marginBottom="40dp"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

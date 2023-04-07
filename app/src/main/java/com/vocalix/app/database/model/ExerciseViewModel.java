@@ -63,6 +63,7 @@ public class ExerciseViewModel extends AndroidViewModel {
             exerciseMap.put("name", exercise.getName());
             exerciseMap.put("type", exercise.getType());
             exerciseMap.put("instructions", exercise.getInstructions());
+            exerciseMap.put("description", exercise.getDescription());
             exerciseMap.put("image", exercise.getImage());
             exerciseMap.put("duration", exercise.getDuration());
             exerciseMap.put("difficulty", exercise.getDifficulty());
@@ -102,6 +103,9 @@ public class ExerciseViewModel extends AndroidViewModel {
 
         exerciseDao.insertAll(newExercises.toArray(new Exercise[0]));
         exerciseDao.updateAll(updatedExercises.toArray(new Exercise[0]));
+
+        // Load the updated exercises from the database and update the LiveData
+        loadVocalExercises();
     }
 
 
@@ -133,10 +137,18 @@ public class ExerciseViewModel extends AndroidViewModel {
                     Exercise exercise = new Exercise();
                     exercise.setName(jsonObject.getString("name"));
                     exercise.setType(jsonObject.getString("type"));
-                    exercise.setInstructions(jsonObject.getString("instructions"));
+                    exercise.setDescription(jsonObject.getString("description"));
                     exercise.setImage(jsonObject.getString("image"));
                     exercise.setDuration(jsonObject.getString("duration"));
                     exercise.setDifficulty(jsonObject.getString("difficulty"));
+
+                    // Parse instructions as a list of strings
+                    JSONArray instructionsArray = jsonObject.getJSONArray("instructions");
+                    List<String> instructionsList = new ArrayList<>();
+                    for (int j = 0; j < instructionsArray.length(); j++) {
+                        instructionsList.add(instructionsArray.getString(j));
+                    }
+                    exercise.setInstructions(instructionsList);
 
                     exercises.add(exercise);
                     Log.d("ExerciseViewModel", "Exercise added: " + exercise.getName());

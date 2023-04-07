@@ -26,4 +26,7 @@ public interface RecordingDao {
 
     @Query("DELETE FROM recordings WHERE id = :id")
     void deleteById(int id);
+
+    @Query("SELECT * FROM recordings ORDER BY date DESC")
+    List<Recording> getAllByDateDescending();
 }

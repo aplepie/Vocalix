@@ -4,6 +4,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.List;
+
 @Entity(tableName = "exercises")
 public class Exercise {
     @PrimaryKey(autoGenerate = true)
@@ -16,10 +18,10 @@ public class Exercise {
     private String type;
 
     @ColumnInfo(name = "instructions")
-    private String instructions;
+    private List<String> instructions;
 
-    @ColumnInfo(name = "example_audio")
-    private String exampleAudio;
+    @ColumnInfo(name = "description")
+    private String description;
 
     @ColumnInfo(name = "image")
     private String image;
@@ -55,20 +57,19 @@ public class Exercise {
         this.type = type;
     }
 
-    public String getInstructions() {
+    public List<String> getInstructions() {
         return instructions;
     }
-
-    public void setInstructions(String instructions) {
+    public void setInstructions(List<String> instructions) {
         this.instructions = instructions;
     }
 
-    public String getExampleAudio() {
-        return exampleAudio;
+    public String getDescription() {
+        return description;
     }
 
-    public void setExampleAudio(String exampleAudio) {
-        this.exampleAudio = exampleAudio;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getImage() {

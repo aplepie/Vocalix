@@ -1,9 +1,15 @@
 package com.vocalix.app.activity;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.Manifest;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -12,15 +18,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ScrollView;
+import android.widget.LinearLayout;
+import android.widget.Space;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +41,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
@@ -37,11 +49,16 @@ import androidx.room.Room;
 import com.arthenica.ffmpegkit.FFmpegKit;
 import com.arthenica.ffmpegkit.FFmpegSession;
 import com.arthenica.ffmpegkit.ReturnCode;
+import com.google.android.material.snackbar.Snackbar;
 import com.vocalix.app.R;
-import com.vocalix.app.adapter.RecordingAdapter;
+import com.vocalix.app.database.adapter.RecordingAdapter;
 import com.vocalix.app.database.AppDatabase;
 import com.vocalix.app.database.entity.Recording;
+import com.vocalix.app.database.model.ExerciseViewModel;
+import com.vocalix.app.database.model.UserViewModel;
+import com.vocalix.app.ui.customviews.InstructionView;
 import com.vocalix.app.ui.customviews.RecordButton;
+import com.vocalix.app.ui.customviews.WaveformView;
 
 import java.io.BufferedOutputStream;
 import java.io.DataOutputStream;
@@ -50,21 +67,33 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.file.Files;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class RecordingActivity extends AppCompatActivity {
 
+    private static final float BOTTOM_SHEET_HEIGHT = 3.75f;
+
+    private String exerciseName;
+
     private Toolbar toolbar;
     private ConstraintLayout bottomSheet;
+    private LinearLayout instructionsContainer;
     private RecordButton recordButton;
     private boolean isBottomSheetExpanded = false;
     private boolean isRecording = false;
     private int bottomSheetHeight;
+    private AtomicReference<String> userIdentifier;
 
     private RecordingAdapter recordingAdapter;
     private List<Recording> recordingList;
@@ -76,18 +105,32 @@ public class RecordingActivity extends AppCompatActivity {
     private String currentRecordingFilePath;
     private int bufferSize;
 
+    private WaveformView waveformView;
+    private float maxAmplitude;
+    private float amplitudeSum = 0;
+    private int amplitudeCount = 0;
+    private Handler timeHandler;
+    private Runnable updateTimeRunnable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recording);
 
+        initializeVariables();
         checkAndRequestAudioPermission();
+        getIdFromViewModel();
 
         initViews();
         setupToolbar();
         setupRecordButton();
         initRecyclerView();
+
+        // Call the loadInstructions method with the loaded instructions
+        loadExerciseDetails(this::loadInstructions);
+
         updateRecordingListVisibility();
+        initHandler();
     }
 
     @Override
@@ -97,10 +140,23 @@ public class RecordingActivity extends AppCompatActivity {
         fetchRecordings();
     }
 
+    @SuppressLint("HardwareIds")
+    private void initializeVariables() {
+        userIdentifier = new AtomicReference<>(Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+        exerciseName = getIntent().getStringExtra("exerciseName");
+    }
+
     private void initViews() {
         toolbar = findViewById(R.id.toolbar);
         recordButton = findViewById(R.id.recordButton);
         bottomSheet = findViewById(R.id.bottom_sheet_container);
+        waveformView = findViewById(R.id.waveform_view);
+        instructionsContainer = findViewById(R.id.instructions_container);
+
+        // Set the fixed width for the time_text TextView
+        TextView timeText = findViewById(R.id.time_text);
+        int maxTimeTextWidth = getMaxTimeTextWidth();
+        timeText.setWidth(maxTimeTextWidth);
     }
 
     private void setupToolbar() {
@@ -116,18 +172,15 @@ public class RecordingActivity extends AppCompatActivity {
     }
 
     private void updateRecordingListVisibility() {
-        ScrollView pastRecordingsScrollView = findViewById(R.id.past_recordings_scroll_view);
         ImageView emptyStateImage = findViewById(R.id.empty_state_image);
         TextView emptyStateText = findViewById(R.id.empty_state_text);
         TextView emptyStateDescription = findViewById(R.id.empty_state_description);
 
         if (!recordingList.isEmpty()) {
-            pastRecordingsScrollView.setVisibility(View.VISIBLE);
             emptyStateImage.setVisibility(View.GONE);
             emptyStateText.setVisibility(View.GONE);
             emptyStateDescription.setVisibility(View.GONE);
         } else {
-            pastRecordingsScrollView.setVisibility(View.GONE);
             emptyStateImage.setVisibility(View.VISIBLE);
             emptyStateText.setVisibility(View.VISIBLE);
             emptyStateDescription.setVisibility(View.VISIBLE);
@@ -153,15 +206,15 @@ public class RecordingActivity extends AppCompatActivity {
         });
 
         recordButton.setOnClickListener(v -> {
-            int currentHeight;
-            int targetHeight;
+            float currentHeight;
+            float targetHeight;
 
             if (isBottomSheetExpanded) {
-                currentHeight = bottomSheetHeight * 3;
+                currentHeight = bottomSheetHeight * BOTTOM_SHEET_HEIGHT;
                 targetHeight = bottomSheetHeight;
             } else {
                 currentHeight = bottomSheetHeight;
-                targetHeight = bottomSheetHeight * 3;
+                targetHeight = bottomSheetHeight * BOTTOM_SHEET_HEIGHT;
             }
 
             // Animate the corner rounding
@@ -179,13 +232,14 @@ public class RecordingActivity extends AppCompatActivity {
         });
     }
 
-    private void animateBottomSheetHeight(int fromHeight, int toHeight) {
-        ValueAnimator heightAnimator = ValueAnimator.ofInt(fromHeight, toHeight);
+    private void animateBottomSheetHeight(float fromHeight, float toHeight) {
+        ValueAnimator heightAnimator = ValueAnimator.ofFloat(fromHeight, toHeight);
         heightAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         heightAnimator.setDuration(300); // Animation duration in milliseconds
 
         heightAnimator.addUpdateListener(animation -> {
-            int newHeight = (int) animation.getAnimatedValue();
+            int newHeight = Math.round((float) animation.getAnimatedValue());
+
             ConstraintLayout.LayoutParams layoutParams = (ConstraintLayout.LayoutParams) bottomSheet.getLayoutParams();
             layoutParams.height = newHeight;
             bottomSheet.setLayoutParams(layoutParams);
@@ -204,23 +258,36 @@ public class RecordingActivity extends AppCompatActivity {
 
             titleText.setVisibility(View.GONE);
             timeText.setVisibility(View.GONE);
+            waveformView.setVisibility(View.GONE);
 
             isRecording = false;
         } else {
             // Animate the visibility of the TextViews
             titleText.setVisibility(View.VISIBLE);
             timeText.setVisibility(View.VISIBLE);
+            waveformView.setVisibility(View.VISIBLE);
 
             titleText.setAlpha(0f);
             timeText.setAlpha(0f);
+            waveformView.setAlpha(0f);
 
             titleText.animate().alpha(1f).setDuration(500).start();
             timeText.animate().alpha(1f).setDuration(500).start();
+            waveformView.animate().alpha(1f).setDuration(500).start();
 
             startRecording();
 
             isRecording = true;
         }
+    }
+
+    private void getIdFromViewModel() {
+        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.getUser().observe(this, user -> {
+            if (user != null) {
+                userIdentifier.set(user.getIdentifier());
+            }
+        });
     }
 
     private void startRecording() {
@@ -245,21 +312,58 @@ public class RecordingActivity extends AppCompatActivity {
         recordingThread = new Thread(() -> {
             try {
                 String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-                String recordingFileName = "VOCALIX_" + timeStamp + ".pcm";
+                String recordingFileName = userIdentifier.get() + "_" + timeStamp + ".pcm";
 
                 currentRecordingFilePath = new File(getCacheDir(), recordingFileName).getAbsolutePath();
                 FileOutputStream fos = new FileOutputStream(currentRecordingFilePath);
                 BufferedOutputStream bos = new BufferedOutputStream(fos);
                 DataOutputStream dos = new DataOutputStream(bos);
 
+                maxAmplitude = Float.MIN_VALUE;
+
                 byte[] buffer = new byte[bufferSize];
                 while (isRecording) {
                     int bytesRead = audioRecord.read(buffer, 0, buffer.length);
+
                     for (int i = 0; i < bytesRead; i++) {
                         dos.writeByte(buffer[i]);
                     }
 
-                    // Process the audio data in real-time here
+                    // Process the audio data in real-time
+                    short[] shortBuffer = new short[bufferSize / 2];
+                    ByteBuffer.wrap(buffer).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shortBuffer);
+
+                    float sum = 0;
+
+                    for (short value : shortBuffer) {
+                        sum += Math.abs(value);
+                        maxAmplitude = Math.max(maxAmplitude, Math.abs(value));
+                    }
+
+                    float amplitude = sum / shortBuffer.length;
+
+                    amplitudeSum += amplitude;
+                    amplitudeCount++;
+
+                    // Calculate the average amplitude
+                    float averageAmplitude = amplitudeSum / amplitudeCount;
+
+                    // Set a dynamic threshold value based on the average amplitude
+                    float dynamicThreshold = averageAmplitude * 6.5f;
+
+                    // Normalize the amplitude by dividing it by the current maximum amplitude or dynamic threshold, whichever is smaller
+                    float normalizedAmplitude = amplitude / Math.min(maxAmplitude, dynamicThreshold);
+
+                    // Apply an exponent to emphasize lower amplitudes (change the exponent value as needed)
+                    float scaledAmplitude = (float) Math.pow(normalizedAmplitude, 0.5);
+
+                    // Fade-in effect: reduce the amplitude during the first 500ms of the recording
+                    long currentTime = System.currentTimeMillis();
+                    if (currentTime - recordingStartTime < 500) {
+                        scaledAmplitude *= (currentTime - recordingStartTime) / 500.0f;
+                    }
+
+                    waveformView.addAmplitude(scaledAmplitude);
                 }
 
                 dos.close();
@@ -272,6 +376,9 @@ public class RecordingActivity extends AppCompatActivity {
         recordingThread.start();
         recordingStartTime = System.currentTimeMillis();
         Toast.makeText(this, "Recording started", Toast.LENGTH_SHORT).show();
+
+        // Start updating the recording time
+        timeHandler.post(updateTimeRunnable);
     }
 
     private void stopRecording() {
@@ -289,28 +396,83 @@ public class RecordingActivity extends AppCompatActivity {
             }
             recordingThread = null;
 
-            Toast.makeText(this, "Recording stopped", Toast.LENGTH_SHORT).show();
+            // Stop updating the recording time
+            timeHandler.removeCallbacks(updateTimeRunnable);
 
-            // Convert the PCM file to an MP3 file (API level 28 and below)
-            String recordingFileName = new File(currentRecordingFilePath).getName();
-            String mp3OutputPath = new File(getCacheDir(), recordingFileName.replace(".pcm", ".mp3")).getAbsolutePath();
-            convertPcmToMp3(currentRecordingFilePath, mp3OutputPath);
+            waveformView.clear();
 
-            // Save the recording to the database
-            String recordingName = "VOCALIX_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-            long duration = System.currentTimeMillis() - recordingStartTime;
-            Recording recording = new Recording(0, recordingName, mp3OutputPath, duration, new Date());
-
-            new Thread(() -> {
-                appDatabase.recordingDao().insert(recording);
-                fetchRecordings();
-            }).start();
-
-            // Save the recording to the gallery
-            saveRecordingToGallery(mp3OutputPath);
+            handleRecordingCompletion();
         } else {
             Toast.makeText(this, "No recording to stop", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void handleRecordingCompletion() {
+        // Calculate the percentage of the maximum possible amplitude (32,767 for 16-bit audio)
+        float maxAmplitudePercentage = (maxAmplitude / 32767) * 100;
+
+        // Set thresholds as percentages of the maximum amplitude
+        float lowAmplitudePercentage = 15; // 15% of maximum amplitude
+        float saturationPercentage = 85; // 85% of maximum amplitude
+
+        boolean isLowAmplitude = maxAmplitudePercentage < lowAmplitudePercentage;
+        boolean isSaturated = maxAmplitudePercentage > saturationPercentage;
+
+        if (isLowAmplitude || isSaturated) {
+            // Ask the user to repeat the recording and delete the file
+            File fileToDelete = new File(currentRecordingFilePath);
+
+            if (fileToDelete.exists()) {
+                boolean success = fileToDelete.delete();
+
+                if (!success) {
+                    Log.w(TAG, "Failed to delete recording file: " + currentRecordingFilePath);
+                }
+            }
+
+            // Show a message to the user indicating the need to repeat the recording
+            Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
+                    "La grabación tiene un nivel muy bajo de sonido o hay indicios de que pueda estar saturada. Por favor, repita la grabación.",
+                    Snackbar.LENGTH_LONG);
+
+            // Customize the Snackbar (Optional)
+            snackbar.setActionTextColor(Color.YELLOW);
+            snackbar.setTextColor(Color.WHITE);
+            snackbar.setBackgroundTint(Color.DKGRAY);
+            snackbar.setAction("OK", v -> snackbar.dismiss());
+
+            // Show the Snackbar
+            snackbar.show();
+
+        } else {
+            // Save the recording
+            saveRecording();
+        }
+    }
+
+    private void saveRecording() {
+        Toast.makeText(this, "Recording stopped", Toast.LENGTH_SHORT).show();
+
+        // Convert the PCM file to an MP3 file (API level 28 and below)
+        String recordingFileName = new File(currentRecordingFilePath).getName();
+        String mp3OutputPath = new File(getCacheDir(), recordingFileName.replace(".pcm", ".mp3")).getAbsolutePath();
+        convertPcmToMp3(currentRecordingFilePath, mp3OutputPath);
+
+        // Save the recording to the database
+        String recordingName = new File(currentRecordingFilePath).getName();
+        long duration = System.currentTimeMillis() - recordingStartTime;
+        Recording recording = new Recording(0, recordingName, mp3OutputPath, duration, new Date());
+
+        // TODO: Get the exercise code from the exercise
+        generateScore(recording);
+
+        new Thread(() -> {
+            appDatabase.recordingDao().insert(recording);
+            fetchRecordings();
+        }).start();
+
+        // Save the recording to the gallery
+        saveRecordingToGallery(mp3OutputPath);
     }
 
     private void convertPcmToMp3(String inputPath, String outputPath) {
@@ -338,7 +500,7 @@ public class RecordingActivity extends AppCompatActivity {
         appDatabase = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "recordings-db").build();
 
         new Thread(() -> {
-            List<Recording> recordings = appDatabase.recordingDao().getAll();
+            List<Recording> recordings = appDatabase.recordingDao().getAllByDateDescending();
 
             runOnUiThread(() -> {
                 int oldSize = recordingList.size();
@@ -417,5 +579,89 @@ public class RecordingActivity extends AppCompatActivity {
         if (!isDeleted) {
             Log.e("saveRecordingToGallery", "Failed to delete the temporary recording file: " + recordingFilePath);
         }
+    }
+
+    private void generateScore(@NonNull Recording recording) {
+        // In the future, replace this implementation with analysis module
+        SecureRandom random = new SecureRandom();
+
+        // Generates a random integer between 0 (inclusive) and 32 (inclusive)
+        int randomNumber = random.nextInt(33);
+        recording.setScore(Integer.toString(randomNumber));
+    }
+
+    private void initHandler() {
+        timeHandler = new Handler(Looper.getMainLooper());
+        updateTimeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateRecordingTime();
+                timeHandler.postDelayed(this, 50); // Update every 50 milliseconds
+            }
+        };
+    }
+
+    private void updateRecordingTime() {
+        TextView timeText = findViewById(R.id.time_text);
+
+        long elapsedTime = System.currentTimeMillis() - recordingStartTime;
+        int minutes = (int) (elapsedTime / 60000);
+        int seconds = (int) ((elapsedTime % 60000) / 1000);
+        int milliseconds = (int) (elapsedTime % 1000) / 10;
+
+        String timeString = String.format(Locale.getDefault(), "%02d:%02d,%02d", minutes, seconds, milliseconds);
+        timeText.setText(timeString);
+    }
+
+    private int getMaxTimeTextWidth() {
+        Paint textPaint = new Paint();
+        textPaint.setTextSize(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16, getResources().getDisplayMetrics()));
+
+        String maxTimeString = "99:59,99";
+        Rect textBounds = new Rect();
+        textPaint.getTextBounds(maxTimeString, 0, maxTimeString.length(), textBounds);
+
+        int padding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics()); // Add 4dp padding
+
+        return textBounds.width() + padding;
+    }
+
+    private void loadInstructions(List<String> instructions) {
+        for (int i = 0; i < instructions.size(); i++) {
+            InstructionView stepView = new InstructionView(this);
+            stepView.setStepNumber(i + 1);
+            stepView.setInstructionText(instructions.get(i));
+            instructionsContainer.addView(stepView);
+
+            if (i < instructions.size() - 1) {
+                Space space = new Space(this);
+                space.setLayoutParams(new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        (int) getResources().getDisplayMetrics().density * 15
+                ));
+
+                instructionsContainer.addView(space);
+            }
+        }
+    }
+
+    private void loadExerciseDetails(ExerciseDetailsCallback callback) {
+        ExerciseViewModel exerciseViewModel = new ViewModelProvider(this).get(ExerciseViewModel.class);
+
+        exerciseViewModel.getVocalExercises().observe(this, exercises -> {
+            for (Map<String, Object> exercise : exercises) {
+                if (Objects.equals(exercise.get("name"), exerciseName)) {
+                    @SuppressWarnings("unchecked")
+                    List<String> instructions = (List<String>) exercise.get("instructions");
+                    callback.onExerciseDetailsLoaded(instructions);
+
+                    break;
+                }
+            }
+        });
+    }
+
+    public interface ExerciseDetailsCallback {
+        void onExerciseDetailsLoaded(List<String> instructions);
     }
 }

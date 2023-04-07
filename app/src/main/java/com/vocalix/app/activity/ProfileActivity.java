@@ -1,9 +1,9 @@
 package com.vocalix.app.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -14,7 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.telephony.TelephonyManager;
+import android.provider.Settings;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -28,7 +28,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.vocalix.app.R;
@@ -85,7 +84,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         // Set the IMEI as the initial identifier value
-        setIMEIAsIdentifier();
+        setAndroidIdAsIdentifier();
 
         // Load user data
         loadUserData();
@@ -130,35 +129,40 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-    private void setIMEIAsIdentifier() {
-        String imei = getDeviceImei();
-        if (imei != null) {
-            identifierField.setText(imei);
-        }
-    }
+    @SuppressLint("HardwareIds")
+    private void setAndroidIdAsIdentifier() {
+        String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
 
-    private String getDeviceImei() {
-        TelephonyManager telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
-            return null;
+        if (androidId != null) {
+            identifierField.setText(androidId);
         }
-        return telephonyManager.getImei();
     }
 
     @SuppressWarnings("deprecation")
     private void loadUserData() {
         userViewModel.getUser().observe(this, user -> {
-            if (user != null) {
-                String name = user.getName() != null && !user.getName().isEmpty() ? user.getName() : "Default Name";
-                String surname = user.getSurname() != null && !user.getSurname().isEmpty() ? user.getSurname() : "Default Surname";
-                String identifier = user.getIdentifier() != null && !user.getIdentifier().isEmpty() ? user.getIdentifier() : "Default Identifier";
+            String name = "Change";
+            String surname = "Me";
+            String identifier;
 
-                userFullName.setText(String.format("%s %s", name, surname));
-                nameField.setText(name);
-                surnameField.setText(surname);
-                identifierField.setText(identifier);
-                emailField.setText(user.getEmail());
+            if (user == null) {
+                setAndroidIdAsIdentifier();
+                identifier = identifierField.getText().toString();
+            } else {
+                if (user.getName() != null && !user.getName().isEmpty()) {
+                    name = user.getName();
+                }
+                if (user.getSurname() != null && !user.getSurname().isEmpty()) {
+                    surname = user.getSurname();
+                }
+                if (user.getIdentifier() != null && !user.getIdentifier().isEmpty()) {
+                    identifier = user.getIdentifier();
+                } else {
+                    setAndroidIdAsIdentifier();
+                    identifier = identifierField.getText().toString();
+                }
+
+                    emailField.setText(user.getEmail());
 
                 if (user.getImageUri() != null && !user.getImageUri().isEmpty()) {
                     try {
@@ -178,6 +182,11 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 }
             }
+
+            userFullName.setText(String.format("%s %s", name, surname));
+            nameField.setText(name);
+            surnameField.setText(surname);
+            identifierField.setText(identifier);
         });
     }
 
@@ -202,6 +211,9 @@ public class ProfileActivity extends AppCompatActivity {
         userViewModel.insertOrUpdate(user);
 
         userFullName.setText(String.format("%s %s", name, surname));
+
+        setResult(Activity.RESULT_OK);
+        finish();
     }
 
     private Uri saveImageToGallery(Bitmap bitmap) {

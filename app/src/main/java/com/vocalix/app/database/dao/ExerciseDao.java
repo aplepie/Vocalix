@@ -1,7 +1,6 @@
 package com.vocalix.app.database.dao;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
@@ -22,10 +21,4 @@ public interface ExerciseDao {
 
     @Update
     void updateAll(Exercise... exercises);
-
-    @Delete
-    void delete(Exercise exercise);
-
-    @Query("SELECT * FROM exercises WHERE id = :vocalExerciseId")
-    Exercise getById(int vocalExerciseId);
 }

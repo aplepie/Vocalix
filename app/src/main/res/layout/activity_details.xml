@@ -34,37 +34,20 @@
             android:layout_marginTop="14dp"
             android:orientation="vertical">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <TextView
+                android:id="@+id/category"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/arrow_image"
-                    android:layout_width="105dp"
-                    android:layout_height="30dp"
-                    android:adjustViewBounds="true"
-                    android:src="@drawable/ic_rectangle_arrow"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/category"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:gravity="center_vertical|start"
-                    android:text="BESTSELLER"
-                    android:textColor="#1F1F39"
-                    android:textSize="12sp"
-                    app:layout_constraintBottom_toBottomOf="@id/arrow_image"
-                    app:layout_constraintEnd_toEndOf="@id/arrow_image"
-                    app:layout_constraintHorizontal_bias="0.4"
-                    app:layout_constraintStart_toStartOf="@id/arrow_image"
-                    app:layout_constraintTop_toTopOf="@id/arrow_image" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_medium"
+                android:includeFontPadding="false"
+                android:paddingStart="8dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="4dp"
+                android:text="BESTSELLER"
+                android:textColor="#1F1F39"
+                android:textSize="12sp"
+                android:background="@drawable/arrow_background" />
 
             <TextView
                 android:id="@+id/exercise_name_tittle"
@@ -181,7 +164,7 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_semibold"
                         android:paddingBottom="5dp"
-                        android:text="About this course"
+                        android:text="Descripción"
                         android:textColor="#1F1F39"
                         android:textSize="18sp"
                         android:textStyle="bold" />
@@ -190,9 +173,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:fillViewport="true"
-                        android:scrollbarStyle="outsideOverlay"
                         android:paddingStart="0dp"
-                        android:paddingEnd="15dp">
+                        android:paddingEnd="15dp"
+                        android:scrollbarStyle="outsideOverlay">
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -211,9 +194,9 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/poppins"
+                                    android:justificationMode="inter_word"
                                     android:textColor="#000000"
-                                    android:textSize="14sp"
-                                    android:justificationMode="inter_word" />
+                                    android:textSize="14sp" />
 
                                 <ImageButton
                                     android:id="@id/expand_collapse"
@@ -261,11 +244,11 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="@font/poppins"
+                                        android:justificationMode="inter_word"
                                         android:paddingStart="18dp"
                                         android:text="Presione el botón de “comenzar la grabación”, para empezar el proceso de grabación."
                                         android:textColor="#1F1F39"
-                                        android:textSize="14sp"
-                                        android:justificationMode="inter_word" />
+                                        android:textSize="14sp" />
                                 </LinearLayout>
 
                                 <Space
@@ -291,11 +274,11 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="@font/poppins"
+                                        android:justificationMode="inter_word"
                                         android:paddingStart="18dp"
                                         android:text="Lea las instrucciones atentamente para saber como funciona el ejercicio y qué debe hacer."
                                         android:textColor="#1F1F39"
-                                        android:textSize="14sp"
-                                        android:justificationMode="inter_word" />
+                                        android:textSize="14sp" />
                                 </LinearLayout>
 
                                 <Space
@@ -321,11 +304,11 @@
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="@font/poppins"
+                                        android:justificationMode="inter_word"
                                         android:paddingStart="18dp"
                                         android:text="Para finalizar la grabación, pulse el botón de nuevo."
                                         android:textColor="#1F1F39"
-                                        android:textSize="14sp"
-                                        android:justificationMode="inter_word" />
+                                        android:textSize="14sp" />
                                 </LinearLayout>
 
                                 <Space
@@ -337,10 +320,10 @@
                                     android:layout_height="wrap_content"
                                     android:alpha="0.5"
                                     android:fontFamily="@font/poppins"
+                                    android:justificationMode="inter_word"
                                     android:text="Si en cualquier momento tiene alguna duda, presione el botón de ayuda."
                                     android:textColor="#1F1F39"
-                                    android:textSize="12sp"
-                                    android:justificationMode="inter_word" />
+                                    android:textSize="12sp" />
                             </LinearLayout>
                         </LinearLayout>
                     </ScrollView>
@@ -371,23 +354,23 @@
             android:paddingStart="70dp"
             android:paddingEnd="69dp">
 
-                <FrameLayout
-                    android:id="@+id/start_recording_button"
-                    android:layout_width="236dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/rounded_button_background">
+            <FrameLayout
+                android:id="@+id/start_recording_button"
+                android:layout_width="236dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounded_button_background">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:fontFamily="sans-serif-medium"
-                        android:text="Comenzar la grabación"
-                        android:textAlignment="center"
-                        android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-                </FrameLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Comenzar la grabación"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
         </LinearLayout>
     </RelativeLayout>
 </RelativeLayout>

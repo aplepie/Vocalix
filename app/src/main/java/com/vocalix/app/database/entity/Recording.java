@@ -24,6 +24,9 @@ public class Recording {
     @ColumnInfo(name = "date")
     private Date date;
 
+    @ColumnInfo(name = "score")
+    private String score;
+
     public Recording(int id, String name, String filePath, long duration, Date date) {
         this.id = id;
         this.name = name;
@@ -71,5 +74,13 @@ public class Recording {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getScore() {
+        return score;
+    }
+
+    public void setScore(String score) {
+        this.score = score;
     }
 }

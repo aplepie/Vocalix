@@ -1,6 +1,5 @@
 package com.vocalix.app.database.entity;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -8,7 +7,6 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "user")
 public class User {
     @PrimaryKey
-    @NonNull
     private int id;
 
     @ColumnInfo(name = "name")
