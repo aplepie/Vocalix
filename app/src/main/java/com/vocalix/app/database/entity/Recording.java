@@ -12,6 +12,9 @@ public class Recording {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    @ColumnInfo(name = "exercise_name")
+    private String exerciseName;
+
     @ColumnInfo(name = "name")
     private String name;
 
@@ -27,8 +30,9 @@ public class Recording {
     @ColumnInfo(name = "score")
     private String score;
 
-    public Recording(int id, String name, String filePath, long duration, Date date) {
+    public Recording(int id, String exerciseName, String name, String filePath, long duration, Date date) {
         this.id = id;
+        this.exerciseName = exerciseName;
         this.name = name;
         this.filePath = filePath;
         this.duration = duration;
@@ -42,6 +46,14 @@ public class Recording {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getExerciseName() {
+        return exerciseName;
+    }
+
+    public void setExerciseName(String exerciseName) {
+        this.exerciseName = exerciseName;
     }
 
     public String getName() {

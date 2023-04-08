@@ -1,5 +1,6 @@
 package com.vocalix.app.database.dao;
 
+import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
@@ -29,4 +30,7 @@ public interface RecordingDao {
 
     @Query("SELECT * FROM recordings ORDER BY date DESC")
     List<Recording> getAllByDateDescending();
+
+    @Query("SELECT * FROM recordings WHERE exercise_name = :exerciseName ORDER BY date DESC")
+    LiveData<List<Recording>> getRecordingsForExercise(String exerciseName);
 }

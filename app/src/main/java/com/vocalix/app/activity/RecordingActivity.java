@@ -41,6 +41,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,8 +52,8 @@ import com.arthenica.ffmpegkit.FFmpegSession;
 import com.arthenica.ffmpegkit.ReturnCode;
 import com.google.android.material.snackbar.Snackbar;
 import com.vocalix.app.R;
-import com.vocalix.app.database.adapter.RecordingAdapter;
 import com.vocalix.app.database.AppDatabase;
+import com.vocalix.app.database.adapter.RecordingAdapter;
 import com.vocalix.app.database.entity.Recording;
 import com.vocalix.app.database.model.ExerciseViewModel;
 import com.vocalix.app.database.model.UserViewModel;
@@ -171,7 +172,7 @@ public class RecordingActivity extends AppCompatActivity {
         }
     }
 
-    private void updateRecordingListVisibility() {
+    public void updateRecordingListVisibility() {
         ImageView emptyStateImage = findViewById(R.id.empty_state_image);
         TextView emptyStateText = findViewById(R.id.empty_state_text);
         TextView emptyStateDescription = findViewById(R.id.empty_state_description);
@@ -413,7 +414,7 @@ public class RecordingActivity extends AppCompatActivity {
 
         // Set thresholds as percentages of the maximum amplitude
         float lowAmplitudePercentage = 15; // 15% of maximum amplitude
-        float saturationPercentage = 85; // 85% of maximum amplitude
+        float saturationPercentage = 90; // 85% of maximum amplitude
 
         boolean isLowAmplitude = maxAmplitudePercentage < lowAmplitudePercentage;
         boolean isSaturated = maxAmplitudePercentage > saturationPercentage;
@@ -461,7 +462,7 @@ public class RecordingActivity extends AppCompatActivity {
         // Save the recording to the database
         String recordingName = new File(currentRecordingFilePath).getName();
         long duration = System.currentTimeMillis() - recordingStartTime;
-        Recording recording = new Recording(0, recordingName, mp3OutputPath, duration, new Date());
+        Recording recording = new Recording(0, exerciseName, recordingName, mp3OutputPath, duration, new Date());
 
         // TODO: Get the exercise code from the exercise
         generateScore(recording);
@@ -499,27 +500,26 @@ public class RecordingActivity extends AppCompatActivity {
     private void fetchRecordings() {
         appDatabase = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "recordings-db").build();
 
-        new Thread(() -> {
-            List<Recording> recordings = appDatabase.recordingDao().getAllByDateDescending();
+        LiveData<List<Recording>> recordingsLiveData = appDatabase.recordingDao().getRecordingsForExercise(exerciseName);
 
-            runOnUiThread(() -> {
-                int oldSize = recordingList.size();
-                recordingList.clear();
+        // Observe the LiveData on the main thread
+        runOnUiThread(() -> recordingsLiveData.observe(this, recordings -> {
+            int oldSize = recordingList.size();
+            recordingList.clear();
 
-                if (oldSize > 0) {
-                    recordingAdapter.notifyItemRangeRemoved(0, oldSize);
-                }
+            if (oldSize > 0) {
+                recordingAdapter.notifyItemRangeRemoved(0, oldSize);
+            }
 
-                recordingList.addAll(recordings);
-                int newSize = recordingList.size();
+            recordingList.addAll(recordings);
+            int newSize = recordingList.size();
 
-                if (newSize > 0) {
-                    recordingAdapter.notifyItemRangeInserted(0, newSize);
-                }
+            if (newSize > 0) {
+                recordingAdapter.notifyItemRangeInserted(0, newSize);
+            }
 
-                updateRecordingListVisibility();
-            });
-        }).start();
+            updateRecordingListVisibility();
+        }));
     }
 
     @Override

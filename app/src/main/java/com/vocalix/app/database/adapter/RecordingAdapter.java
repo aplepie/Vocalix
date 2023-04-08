@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
 import com.vocalix.app.R;
+import com.vocalix.app.activity.RecordingActivity;
 import com.vocalix.app.database.AppDatabase;
 import com.vocalix.app.database.entity.Recording;
 
@@ -63,7 +64,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.View
         // Set the delete_icon OnClickListener
         holder.deleteIcon.setOnClickListener(v -> {
             // Remove the recording from the list and the device
-            removeRecording(position);
+            removeRecording(position, ((RecordingActivity) context)::updateRecordingListVisibility);
         });
     }
 
@@ -90,7 +91,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.View
         }
     }
 
-    private void removeRecording(int position) {
+    private void removeRecording(int position, Runnable afterRemove) {
         Recording recording = recordings.get(position);
 
         // Delete the recording from the device
@@ -113,6 +114,11 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.View
                 recordings.remove(position);
                 notifyItemRemoved(position);
                 notifyItemRangeChanged(position, recordings.size());
+
+                // Call the afterRemove Runnable
+                if (afterRemove != null) {
+                    afterRemove.run();
+                }
             });
         }).start();
     }

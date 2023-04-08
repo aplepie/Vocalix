@@ -15,7 +15,7 @@ import com.vocalix.app.database.entity.Recording;
 import com.vocalix.app.database.entity.User;
 import com.vocalix.app.database.utils.Converters;
 
-@Database(entities = {Recording.class, Exercise.class, User.class}, version = 4, exportSchema = false)
+@Database(entities = {Recording.class, Exercise.class, User.class}, version = 3, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
