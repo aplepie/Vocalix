@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements ExerciseAdapter.O
     private ActivityResultLauncher<Intent> profileActivityResultLauncher;
     private ExerciseAdapter exerciseAdapter;
     private ExerciseViewModel exerciseViewModel;
-    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements ExerciseAdapter.O
     private void setUpViewModels() {
         TextView user_name_text = findViewById(R.id.user_name_text);
 
-        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        UserViewModel userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
         userViewModel.getUser().observe(this, user -> {
             if (user != null) {
                 String name = user.getName();

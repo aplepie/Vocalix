@@ -10,8 +10,8 @@ import com.vocalix.app.database.UserRepository;
 import com.vocalix.app.database.entity.User;
 
 public class UserViewModel extends AndroidViewModel {
-    private UserRepository userRepository;
-    private LiveData<User> user;
+    private final UserRepository userRepository;
+    private final LiveData<User> user;
 
     public UserViewModel(@NonNull Application application) {
         super(application);

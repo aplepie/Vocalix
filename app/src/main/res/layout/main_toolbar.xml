@@ -7,13 +7,11 @@
     android:gravity="center_vertical">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/profile_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="goToProfilePage">
 
         <ImageView
-            android:id="@+id/circleImageView"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/ic_account_circle"
@@ -32,7 +30,6 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/welcome_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bienvenido de nuevo!"
@@ -50,13 +47,11 @@
     </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/more_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="goToProfilePage">
 
         <ImageView
-            android:id="@+id/three_dots_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_more_horiz"

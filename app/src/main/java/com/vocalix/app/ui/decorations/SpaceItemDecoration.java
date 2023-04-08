@@ -18,16 +18,5 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
                                @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         outRect.top = space;
         outRect.bottom = space;
-
-        /*
-        // Add left margin for the first item in the list
-        if (parent.getChildAdapterPosition(view) == 0) {
-            outRect.left = space;
-        }
-        // Add right margin for the last item in the list
-        if (parent.getChildAdapterPosition(view) == parent.getAdapter().getItemCount() - 1) {
-            outRect.right = space;
-        }
-        */
     }
 }

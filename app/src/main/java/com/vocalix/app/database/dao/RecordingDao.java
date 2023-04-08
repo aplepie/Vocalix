@@ -13,12 +13,6 @@ import java.util.List;
 @Dao
 public interface RecordingDao {
 
-    @Query("SELECT * FROM recordings")
-    List<Recording> getAll();
-
-    @Query("SELECT * FROM recordings WHERE id = :id")
-    Recording getById(long id);
-
     @Insert
     void insert(Recording recording);
 
@@ -27,9 +21,6 @@ public interface RecordingDao {
 
     @Query("DELETE FROM recordings WHERE id = :id")
     void deleteById(int id);
-
-    @Query("SELECT * FROM recordings ORDER BY date DESC")
-    List<Recording> getAllByDateDescending();
 
     @Query("SELECT * FROM recordings WHERE exercise_name = :exerciseName ORDER BY date DESC")
     LiveData<List<Recording>> getRecordingsForExercise(String exerciseName);

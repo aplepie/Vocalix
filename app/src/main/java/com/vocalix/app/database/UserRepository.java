@@ -11,9 +11,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class UserRepository {
-    private UserDao userDao;
-    private LiveData<User> user;
-    private ExecutorService executorService;
+    private final UserDao userDao;
+    private final LiveData<User> user;
+    private final ExecutorService executorService;
 
     public UserRepository(Application application) {
         AppDatabase db = AppDatabase.getInstance(application);

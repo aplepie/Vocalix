@@ -75,7 +75,6 @@
         android:layout_marginTop="-15dp">
 
         <LinearLayout
-            android:id="@+id/first_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/second_layout"
@@ -98,16 +97,16 @@
                     android:orientation="horizontal">
 
                     <LinearLayout
-                        android:layout_width="245dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/exercise_name"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/poppins_semibold"
-                            android:text="Product Design v1.0"
+                            android:text="Título Ejercicio"
                             android:textColor="#1F1F39"
                             android:textSize="23sp"
                             android:textStyle="bold" />
@@ -140,13 +139,13 @@
 
                     <TextView
                         android:id="@+id/exercise_difficulty"
-                        android:layout_width="wrap_content"
+                        android:layout_width="140dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         android:layout_weight="1"
                         android:fontFamily="@font/poppins_semibold"
                         android:gravity="end"
-                        android:text="EASY"
+                        android:text="DIFICULTAD"
                         android:textColor="#3D5CFF"
                         android:textSize="23sp"
                         android:textStyle="bold" />
@@ -335,7 +334,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/white_background_layout"
             android:layout_width="match_parent"
             android:layout_height="98dp"
             android:layout_alignParentBottom="true"

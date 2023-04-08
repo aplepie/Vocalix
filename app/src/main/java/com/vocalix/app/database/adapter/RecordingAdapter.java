@@ -107,7 +107,7 @@ public class RecordingAdapter extends RecyclerView.Adapter<RecordingAdapter.View
         // Delete the recording from the database
         new Thread(() -> {
             AppDatabase appDatabase = Room.databaseBuilder(context.getApplicationContext(), AppDatabase.class, "recordings-db").build();
-            appDatabase.recordingDao().deleteById((int) recording.getId());
+            appDatabase.recordingDao().deleteById(recording.getId());
 
             // Update the RecyclerView on the main thread
             ((AppCompatActivity) context).runOnUiThread(() -> {

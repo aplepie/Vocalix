@@ -33,10 +33,6 @@ public abstract class AppDatabase extends RoomDatabase {
                                     AppDatabase.class, "app_database")
                             .fallbackToDestructiveMigration() // Allow destructive migration
                             .build();
-                    /*
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, "app_database").build();
-                     */
                 }
             }
         }

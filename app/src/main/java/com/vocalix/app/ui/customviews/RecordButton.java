@@ -113,12 +113,9 @@ public class RecordButton extends View {
         ValueAnimator animator = ValueAnimator.ofFloat(isRecordingScale, targetScale);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
         animator.setDuration(500);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                isRecordingScale = (float) valueAnimator.getAnimatedValue();
-                invalidate();
-            }
+        animator.addUpdateListener(valueAnimator -> {
+            isRecordingScale = (float) valueAnimator.getAnimatedValue();
+            invalidate();
         });
         animator.start();
     }

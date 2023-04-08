@@ -4,13 +4,6 @@
     <string name="description_text_placement_1">Seleccione uno de los ejercicios de la lista o búsque un ejercicio en concreto en la barra de búsqueda.</string>
     <string name="description_text_placement_2">Si necesita ayuda, pulse el icono que se encuentra en la parte superior derecha de la pantalla (dentro de cada ejercicio).</string>
     <string name="home_search_hint">Busca por ejercicios o categorías</string>
-    <string name="place_image_description">Place image</string>
     <string name="back_arrow">Navigate back to the previous screen</string>
-    <string name="bookmark_icon">Bookmark the exercise for the future</string>
-    <string name="delete_button_description">Delete button</string>
 
-    <string name="profile_button_animation">profile_button_animation</string>
-    <string name="vocal_exercises_json">vocal_exercises.json</string>
-    <string name="app_prefs">app_prefs</string>
-    <string name="data_inserted">data_inserted</string>
 </resources>

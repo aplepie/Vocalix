@@ -31,22 +31,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-    <ImageView
-        android:id="@+id/change_profile_image_icon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
-        android:src="@drawable/ic_add_a_photo"
-        app:layout_constraintBottom_toBottomOf="@+id/profile_image"
-        app:layout_constraintEnd_toEndOf="@+id/profile_image" />
-
     <TextView
         android:id="@+id/user_full_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="Name Surname"
+        android:text="Nombre Apellido"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +68,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:text="Name"
+            android:text="Nombre"
             android:textColor="#3D5A80"
             app:layout_constraintStart_toEndOf="@+id/name_icon"
             app:layout_constraintTop_toTopOf="parent" />
@@ -89,7 +79,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
-            android:hint="Name"
+            android:hint="Nombre"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/name_icon"
             app:layout_constraintTop_toBottomOf="@+id/name_label" />
@@ -111,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="Surname"
+            android:text="Apellido(s)"
             android:textColor="#3D5A80"
             app:layout_constraintStart_toEndOf="@+id/surname_icon"
             app:layout_constraintTop_toBottomOf="@+id/name_field" />
@@ -122,7 +112,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
-            android:hint="Surname"
+            android:hint="Apellido(s)"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/surname_icon"
             app:layout_constraintTop_toBottomOf="@+id/surname_label" />
@@ -144,7 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="Identifier"
+            android:text="Identificador"
             android:textColor="#3D5A80"
             app:layout_constraintStart_toEndOf="@+id/identifier_icon"
             app:layout_constraintTop_toBottomOf="@+id/surname_field" />
@@ -155,7 +145,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
-            android:hint="Identifier"
+            android:hint="Identificador"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/identifier_icon"
             app:layout_constraintTop_toBottomOf="@+id/identifier_label" />
@@ -201,7 +191,7 @@
             android:backgroundTint="#3D5A80"
             android:gravity="center|center_vertical"
             android:layout_marginTop="40dp"
-            android:text="Save"
+            android:text="Guardar"
             android:textColor="@android:color/white"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"

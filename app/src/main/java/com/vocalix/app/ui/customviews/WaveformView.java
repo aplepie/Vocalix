@@ -13,18 +13,16 @@ import java.util.List;
 
 public class WaveformView extends View {
 
-    private Paint paint;
-    private ArrayList<Float> amplitudes;
-    private ArrayList<RectF> spikes;
+    private final Paint paint;
+    private final ArrayList<Float> amplitudes;
+    private final ArrayList<RectF> spikes;
 
-    private float radius = 6f;
-    private float w = 9f;
-    private float d = 6f;
+    private final float w = 9f;
+    private final float d = 6f;
 
-    private float sw = 0f;
-    private float sh = 400f;
+    private final float sw;
 
-    private int maxSpikes;
+    private final int maxSpikes;
 
     public WaveformView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -42,23 +40,7 @@ public class WaveformView extends View {
     }
 
     public synchronized void addAmplitude(float amp) {
-        /*
-        float norm = Math.min(amp / 7, 400);
-        amplitudes.add(norm);
-
-        spikes.clear();
-        List<Float> amps = amplitudes.subList(Math.max(0, amplitudes.size() - maxSpikes), amplitudes.size());
-        for (int i = 0; i < amps.size(); i++) {
-            float left = sw - i * (w + d);
-            float top = sh / 2 - amps.get(i) / 2;
-            float right = left + w;
-            float bottom = top + amps.get(i);
-            spikes.add(new RectF(left, top, right, bottom));
-        }
-
-        invalidate();
-         */
-
+        float sh = 400f;
         float scaledAmplitude = Math.min(amp * sh, sh);
         amplitudes.add(scaledAmplitude);
 
@@ -75,19 +57,18 @@ public class WaveformView extends View {
         postInvalidate();
     }
 
-    public synchronized ArrayList<Float> clear() {
-        ArrayList<Float> amps = new ArrayList<>(amplitudes);
+    public synchronized void clear() {
         amplitudes.clear();
         spikes.clear();
         postInvalidate();
 
-        return amps;
     }
 
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         for (RectF spike : spikes) {
+            float radius = 6f;
             canvas.drawRoundRect(spike, radius, radius, paint);
         }
     }
