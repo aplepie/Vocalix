@@ -41,8 +41,8 @@ Las contribuciones son bienvenidas y se aceptarán a través de pull requests en
 
 ## Autores
 
-- [Nombre del autor 1](https://github.com/aplepie)
-- [Nombre del autor 2](https://github.com/martaest)
+- [Applepie](https://github.com/aplepie)
+- [Marta](httpsmartaest)
 
 ## Licencia
 
